@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html ng-app="app">
+
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<link rel="stylesheet" href="css/weui.min.css" />
+	</head>
+
+	<body>
+		<div ui-view=""></div>
+		
+		
+	</body>
+	<script type="text/javascript" src="js/angular.js" ></script>
+	<script type="text/javascript" src="js/ui-route.js" ></script>	
+	<script>
+		var app=angular.module("app",['ui.router']);
+		app.config(['$stateProvider','$urlRouterProvider',function($stateProvider,$urlRouterProvider){
+			$stateProvider.state("index",{
+				url:"/index",
+				templateUrl:'views/index.html',
+				//controller: 'indexCtrl'
+			}).state("index.a",{
+				url:"/a",
+				templateUrl:'views/indexA.html',
+				controller: 'indexACtrl'
+			})
+			$urlRouterProvider.when('', '/index')
+		}]);
+		app.controller('indexACtrl',['$scope', '$http', '$rootScope',function($scope, $http, $rootScope) {
+				$http.jsonp("news.php",{
+						params:{
+						callback: 'JSON_CALLBACK',
+						page: 1
+					}}).success(function(data){
+						console.log(data);
+						//$scope.arrs = $scope.arrs.concat(data.showapi_res_body.pagebean.contentlist);
+						$scope.news =data.showapi_res_body.pagebean.contentlist;
+						//$scope.news = $scope.arrs;
+					})
+			
+			
+		}])
+	
+		app.directive('navtab', function() {
+			return {
+				templateUrl: 'views/nav.html'
+			}
+		})
+	</script>
+</html>
